@@ -45,3 +45,18 @@ func WriteEmbedFiles(dir embed.FS, prefix, dest string) error {
 	}
 	return nil
 }
+
+// List returns file list of embedded files.
+func List(dir embed.FS, prefix string) ([]string, error) {
+	list := make([]string, 0)
+	walkFunc := func(path string, d fs.DirEntry, err error) error {
+		if !d.IsDir() {
+			list = append(list, path)
+		}
+		return nil
+	}
+	if err := fs.WalkDir(dir, prefix, walkFunc); err != nil {
+		return nil, err
+	}
+	return list, nil
+}
